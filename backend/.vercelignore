@@ -1,8 +1,15 @@
+# Vercel runs composer install itself
 /vendor
+
+# not needed: no vite build for the API
 /node_modules
 /package.json
 /vite.config.js
+
+# old / test folders
 /fronetend
 /bootstrap_old
 /tests
+
+# secrets → Vercel Environment Variables
 .env
