@@ -58,7 +58,8 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                // relative path (certs/ca.pem) works on any server; absolute path also OK
+                PDO::MYSQL_ATTR_SSL_CA => ($ca = env('MYSQL_ATTR_SSL_CA')) && is_file(base_path($ca)) ? base_path($ca) : $ca,
             ]) : [],
         ],
 
