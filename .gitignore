@@ -1,0 +1,7 @@
+# leftovers (old copies) - not part of the project
+/backend/fronetend/
+/backend/bootstrap_old/
+
+# secrets / local only
+.env
+*.log

@@ -1,0 +1,29 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, Arial, sans-serif; background: #f4f5fb; color: #222; }
+.container { max-width: 960px; margin: 0 auto; padding: 16px; }
+.nav { display: flex; gap: 16px; margin-bottom: 24px; }
+.nav a { color: #5b4bd6; text-decoration: none; font-weight: 600; }
+.card { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 2px 10px rgba(0,0,0,.06); margin-bottom: 16px; }
+.narrow { max-width: 420px; margin: 0 auto 16px; }
+label { display: block; font-weight: 600; margin: 12px 0 4px; }
+input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; }
+button { margin-top: 16px; padding: 10px 18px; border: 0; border-radius: 8px; background: #5b4bd6; color: #fff; font-size: 15px; cursor: pointer; }
+button:disabled { opacity: .6; cursor: default; }
+button.light { background: #eee; color: #333; }
+.error { color: #c0262d; font-size: 14px; margin-top: 4px; }
+.success { color: #137a3a; }
+.box { padding: 16px; border-radius: 10px; text-align: center; font-size: 20px; font-weight: 700; margin-top: 16px; }
+.box.success { background: #dcf7e6; color: #137a3a; }
+.box.already_checked_in { background: #fff1d6; color: #9a5b00; }
+.box.invalid { background: #fde2e2; color: #c0262d; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; }
+.stats { display: flex; gap: 12px; flex-wrap: wrap; }
+.stats div { flex: 1; min-width: 120px; background: #efecff; padding: 12px; border-radius: 10px; }
+.stats b { display: block; font-size: 24px; }
+.row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.table-wrap { overflow-x: auto; }
+.check { display: flex; align-items: center; gap: 6px; font-weight: 400; margin-top: 8px; }
+.check input { width: auto; }
+.qr { text-align: center; margin-top: 16px; }
+.qr img { display: block; margin: 0 auto; border: 1px solid #eee; border-radius: 8px; }
