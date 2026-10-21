@@ -2,6 +2,10 @@
 --  Reservation System - import-postgres.sql
 --  same as import.sql, for Postgres (Neon on Vercel)
 -- =========================================
+-- one DO block = one statement → also runs in Vercel's Storage → Query page
+
+DO $do$
+BEGIN
 
 DROP TABLE IF EXISTS checkin_logs, email_logs, personal_access_tokens, registrations, users;
 
@@ -66,3 +70,6 @@ CREATE INDEX personal_access_tokens_tokenable_index ON personal_access_tokens (t
 -- ADMIN USER: email admin@gmail.com / password 123
 INSERT INTO users (username, email, password, created_at, updated_at)
 VALUES ('admin', 'admin@gmail.com', '$2y$12$GtCfeVbM9CxTDfMDCW4Po.XPsBBEwgsrm4QBU8kTWAbPTVat.JcnW', NOW(), NOW());
+
+END
+$do$;
