@@ -12,48 +12,33 @@ use Throwable;
 
 class ConfirmationMailer
 {
-    /**
-     * Make QR code → send email via Gmail → Sent?
-     * $type   = 'qr' (after register) | 'resend' (admin button)  ← enum values from the ERD
-     * $sentBy = admin id, null = system
-     */
+    // Send QR email via Gmail → save in email_logs
+    // $type = 'qr' (after register) | 'resend' (admin button), $sentBy = admin id, null = system
     public function send(Registration $registration, string $type, ?int $sentBy = null): bool
     {
+        $error = null;
+
         try {
-            $qrPng = $this->qrPng($registration);
-
-            // Send email via Gmail
-            Mail::to($registration->email)->send(new ConfirmationMail($registration, $qrPng));
-
-            // Sent? YES → INSERT email_logs status = sent
-            EmailLog::create([
-                'registration_id' => $registration->id,
-                'sent_by'         => $sentBy,
-                'type'            => $type,
-                'status'          => 'sent',
-                'sent_at'         => now(),
-            ]);
-
-            // → UPDATE registrations email_sent_at = now
+            Mail::to($registration->email)->send(new ConfirmationMail($registration, $this->qrPng($registration)));
             $registration->update(['email_sent_at' => now()]);
-
-            return true;
         } catch (Throwable $e) {
-            // Sent? NO → INSERT email_logs status = failed, error_message
-            EmailLog::create([
-                'registration_id' => $registration->id,
-                'sent_by'         => $sentBy,
-                'type'            => $type,
-                'status'          => 'failed',
-                'error_message'   => $e->getMessage(),
-                'sent_at'         => now(),
-            ]);
-
-            return false;
+            $error = $e->getMessage();
         }
+
+        // INSERT email_logs → sent or failed
+        EmailLog::create([
+            'registration_id' => $registration->id,
+            'sent_by'         => $sentBy,
+            'type'            => $type,
+            'status'          => $error === null ? 'sent' : 'failed',
+            'error_message'   => $error,
+            'sent_at'         => now(),
+        ]);
+
+        return $error === null;
     }
 
-    // Make QR code from the registration token (same image in the email and on the page)
+    // QR image from the token (same in the email and on the page)
     public function qrPng(Registration $registration): string
     {
         return (new PngWriter())

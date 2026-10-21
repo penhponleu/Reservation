@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    // Admin logs in → SELECT users by email, check hashed password
+    // Admin logs in → find user by email → check password → give token
     public function login(Request $request)
     {
         $data = $request->validate([
@@ -16,26 +16,25 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        $user = User::where('email', $data['email'])->first();
-        $stored = trim((string) $user?->password); // phpMyAdmin Enter adds "\r\n"
 
-        // Password typed as plain text in phpMyAdmin → compare as text instead of crashing
-        $plain = $stored !== '' && ! Hash::isHashed($stored);
-        $ok = $stored !== '' && ($plain
-            ? hash_equals($stored, $data['password'])
-            : Hash::check($data['password'], $stored));
+        $user     = User::where('email', $data['email'])->first();
+        $password = trim((string) $user?->password); // phpMyAdmin can add "\r\n"
 
-        // Correct? No → "Wrong email or password"
+        // password typed as plain text in phpMyAdmin → compare as text
+        $plain = $password !== '' && ! Hash::isHashed($password);
+        $ok    = $plain
+            ? hash_equals($password, $data['password'])
+            : Hash::check($data['password'], $password);
+
         if (! $ok) {
             return response()->json(['message' => 'Wrong email or password'], 401);
         }
 
-        // Plain text matched → save it as a bcrypt hash from now on
+        // plain text matched → save as bcrypt hash from now on
         if ($plain) {
             $user->update(['password' => $data['password']]);
         }
 
-        // Yes → INSERT personal_access_tokens
         $token = $user->createToken('admin')->plainTextToken;
 
         return response()->json(['token' => $token, 'user' => $user]);
@@ -46,7 +45,6 @@ class AuthController extends Controller
         return $request->user();
     }
 
-    // Logout → DELETE personal_access_tokens
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();

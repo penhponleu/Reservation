@@ -3,7 +3,7 @@ const api = useApi();
 const form = reactive({ username: "", email: "", phone: "" });
 const errors = ref<Record<string, string[]>>({});
 const message = ref("");
-const qr = ref(""); // QR image after register (same as the email)
+const qr = ref(""); // QR shown only if the email failed
 const loading = ref(false);
 
 async function submit() {
@@ -14,10 +14,8 @@ async function submit() {
   try {
     const res = await api("/register", { method: "POST", body: form });
     message.value = res.message;
-    qr.value = res.qr;
-    form.username = "";
-    form.email = "";
-    form.phone = "";
+    qr.value = res.email_sent ? "" : res.qr;
+    Object.assign(form, { username: "", email: "", phone: "" });
   } catch (e: any) {
     // Form valid? No → Show errors
     errors.value = e.data?.errors ?? {
@@ -30,8 +28,11 @@ async function submit() {
 </script>
 
 <template>
-  <div class="card narrow">
-    <h1>Event Registration</h1>
+  <div class="card narrow register">
+    <div class="register-head">
+      <h1>Event Registration</h1>
+      <p>Fill in your details and we'll email your QR code to your Gmail.</p>
+    </div>
     <form @submit.prevent="submit">
       <label>Username</label>
       <input v-model="form.username" type="text" placeholder="Your name" autocomplete="name" />
@@ -60,3 +61,25 @@ async function submit() {
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Card */
+.register { max-width: 440px; padding: 32px; }
+
+/* Title */
+.register-head { text-align: center; margin-bottom: 8px; }
+.register-head h1 { font-size: 24px; }
+.register-head p { margin: 0; color: var(--muted); font-size: 14px; }
+
+/* Full-width submit button */
+.register form button { width: 100%; margin-top: 24px; padding: 12px; }
+
+/* Success message */
+.register > .success {
+  margin: 16px 0 0;
+  padding: 12px;
+  background: var(--green-bg);
+  border-radius: 8px;
+  text-align: center;
+}
+</style>

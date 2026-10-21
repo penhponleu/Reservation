@@ -1,22 +1,22 @@
 <script setup lang="ts">
-const api = useApi()
-const token = useCookie<string | null>('token', { maxAge: 60 * 60 * 12 })
-const form = reactive({ email: '', password: '' })
-const error = ref('')
-const loading = ref(false)
-const showPassword = ref(false)
+const api = useApi();
+const token = useCookie<string | null>("token", { maxAge: 60 * 60 * 12 });
+const form = reactive({ email: "", password: "" });
+const error = ref("");
+const loading = ref(false);
+const showPassword = ref(false);
 
 async function login() {
-  loading.value = true
-  error.value = ''
+  loading.value = true;
+  error.value = "";
   try {
-    const res = await api('/login', { method: 'POST', body: form })
-    token.value = res.token
-    await navigateTo('/admin')
+    const res = await api("/login", { method: "POST", body: form });
+    token.value = res.token;
+    await navigateTo("/admin");
   } catch (e: any) {
-    error.value = e.data?.message ?? 'Wrong email or password'
+    error.value = e.data?.message ?? "Wrong email or password";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 </script>

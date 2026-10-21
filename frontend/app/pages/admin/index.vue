@@ -59,18 +59,9 @@ onMounted(load);
         </div>
       </div>
       <div class="stats">
-        <div>
-          <b>{{ stats.total }}</b
-          >Registered
-        </div>
-        <div>
-          <b>{{ stats.emailed }}</b
-          >Email sent
-        </div>
-        <div>
-          <b>{{ stats.checked_in }}</b
-          >Checked in
-        </div>
+        <div><b>{{ stats.total }}</b>Registered</div>
+        <div><b>{{ stats.emailed }}</b>Email sent</div>
+        <div><b>{{ stats.checked_in }}</b>Checked in</div>
       </div>
     </div>
 
@@ -97,11 +88,7 @@ onMounted(load);
             <td>{{ fmt(r.email_sent_at) }}</td>
             <td>{{ fmt(r.checked_in_at) }}</td>
             <td>
-              <button
-                class="light"
-                :disabled="busyId === r.id"
-                @click="resend(r.id)"
-              >
+              <button class="light" :disabled="busyId === r.id" @click="resend(r.id)">
                 {{ busyId === r.id ? "Sending..." : "Resend email" }}
               </button>
             </td>

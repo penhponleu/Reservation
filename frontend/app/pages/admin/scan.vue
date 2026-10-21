@@ -59,10 +59,7 @@ onMounted(loadLogs);
 
       <div v-if="result" :class="['box', result.result]">
         {{ result.message }}
-        <div
-          v-if="result.registration"
-          style="font-size: 14px; font-weight: 400"
-        >
+        <div v-if="result.registration" style="font-size: 14px; font-weight: 400">
           {{ result.registration.username }} · {{ result.registration.email }} · {{ result.registration.phone }}
         </div>
       </div>
