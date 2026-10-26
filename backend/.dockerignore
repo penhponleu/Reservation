@@ -1,0 +1,11 @@
+vendor
+node_modules
+fronetend
+bootstrap_old
+.env
+.env.*
+.vercel
+storage/logs/*
+storage/framework/views/*
+storage/framework/cache/*
+storage/framework/sessions/*
