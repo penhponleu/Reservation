@@ -15,6 +15,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::get('/registrations', [RegistrationController::class, 'index']);
+    Route::put('/registrations/{registration}', [RegistrationController::class, 'update']);
     Route::post('/registrations/{registration}/resend', [RegistrationController::class, 'resend']);
 
     Route::post('/checkin', [CheckinController::class, 'scan']);

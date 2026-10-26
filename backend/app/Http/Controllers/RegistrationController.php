@@ -60,6 +60,38 @@ class RegistrationController extends Controller
         ]);
     }
 
+    // Admin fixes a guest's name / email / phone → new email? send the QR there
+    public function update(Request $request, Registration $registration)
+    {
+        $data = $request->validate([
+            'fullname' => 'required|string|max:100',
+            'email'    => 'required|email|max:255|unique:registrations,email,'.$registration->id,
+            'phone'    => 'required|string|max:30',
+        ], [
+            'email.unique' => 'This email is already registered.',
+        ], [
+            'fullname' => 'full name',
+        ]);
+
+        $emailChanged = strcasecmp($data['email'], $registration->email) !== 0;
+
+        $registration->update([
+            'fullname' => trim($data['fullname']),
+            'email'    => $data['email'],
+            'phone'    => $data['phone'],
+        ]);
+
+        $message = 'Saved.';
+        if ($emailChanged) {
+            $sent    = $this->mailer->send($registration, 'resend', $request->user()->id);
+            $message = $sent
+                ? 'Saved. QR code sent to '.$registration->email
+                : 'Saved, but the email to '.$registration->email.' could not be sent.';
+        }
+
+        return response()->json(['message' => $message, 'data' => $registration->fresh()]);
+    }
+
     // Resend email → sent_by = admin id
     public function resend(Request $request, Registration $registration)
     {
