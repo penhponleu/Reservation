@@ -6,7 +6,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
 # optional: override the backend URL at build time (Dokploy → Build-time Arguments)
-ARG NUXT_PUBLIC_API_BASE=https://reservation.devams.site/api
+ARG NUXT_PUBLIC_API_BASE=https://resbn.devams.site/api
 ENV NUXT_PUBLIC_API_BASE=$NUXT_PUBLIC_API_BASE
 RUN npm run generate
 
