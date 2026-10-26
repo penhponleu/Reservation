@@ -6,10 +6,10 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
   runtimeConfig: {
     public: {
-      // Laravel backend: local on `npm run dev`, Vercel on build (NUXT_PUBLIC_API_BASE overrides both)
+      // Laravel backend: local on `npm run dev`, Dokploy on build (NUXT_PUBLIC_API_BASE overrides both)
       apiBase:
         process.env.NODE_ENV === "production"
-          ? "https://reservation-ylll.vercel.app/api"
+          ? "https://reservation.devams.site/api"
           : "http://127.0.0.1:8000/api",
     },
   },

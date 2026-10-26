@@ -21,4 +21,5 @@ RUN composer dump-autoload --optimize --no-dev \
 
 EXPOSE 8000
 # env vars come from Dokploy's Environment tab at runtime
-CMD php artisan config:clear && php artisan serve --host=0.0.0.0 --port=8000
+# wait for the database, create missing tables + admin account, then start
+CMD php artisan config:clear;     until php artisan migrate --force; do echo "waiting for database..."; sleep 3; done;     php artisan db:seed --force;     php artisan serve --host=0.0.0.0 --port=8000
