@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Registration extends Model
 {
-    protected $fillable = ['username', 'email', 'phone', 'token', 'email_sent_at', 'checked_in_at'];
+    protected $fillable = ['fullname', 'email', 'phone', 'token', 'email_sent_at', 'checked_in_at'];
 
     protected $hidden = ['token']; // never send the QR value in API responses
 

@@ -72,7 +72,7 @@ onMounted(load);
           <tr>
             <th>#</th>
             <th>Email</th>
-            <th>Username</th>
+            <th>Full name</th>
             <th>Phone</th>
             <th>Email sent</th>
             <th>Checked in</th>
@@ -83,7 +83,7 @@ onMounted(load);
           <tr v-for="r in rows" :key="r.id">
             <td>{{ r.id }}</td>
             <td>{{ r.email }}</td>
-            <td>{{ r.username }}</td>
+            <td>{{ r.fullname }}</td>
             <td>{{ r.phone }}</td>
             <td>{{ fmt(r.email_sent_at) }}</td>
             <td>{{ fmt(r.checked_in_at) }}</td>

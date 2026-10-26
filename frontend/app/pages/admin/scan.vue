@@ -60,7 +60,7 @@ onMounted(loadLogs);
       <div v-if="result" :class="['box', result.result]">
         {{ result.message }}
         <div v-if="result.registration" style="font-size: 14px; font-weight: 400">
-          {{ result.registration.username }} · {{ result.registration.email }} · {{ result.registration.phone }}
+          {{ result.registration.fullname }} · {{ result.registration.email }} · {{ result.registration.phone }}
         </div>
       </div>
       <button v-if="result" @click="next">Scan next</button>
@@ -86,9 +86,9 @@ onMounted(loadLogs);
         <tbody>
           <tr v-for="l in logs" :key="l.id">
             <td>{{ new Date(l.scanned_at).toLocaleString() }}</td>
-            <td>{{ l.registration ? `${l.registration.username} (${l.registration.email})` : l.scanned_value }}</td>
+            <td>{{ l.registration ? `${l.registration.fullname} (${l.registration.email})` : l.scanned_value }}</td>
             <td>{{ l.result }}</td>
-            <td>{{ l.user?.username }}</td>
+            <td>{{ l.user?.fullname }}</td>
           </tr>
         </tbody>
       </table>

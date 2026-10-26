@@ -16,16 +16,18 @@ class RegistrationController extends Controller
     {
         // No → Show errors (Laravel returns 422 + messages automatically)
         $data = $request->validate([
-            'username' => 'required|string|max:100',
+            'fullname' => 'required|string|max:100',
             'email'    => 'required|email|max:255|unique:registrations,email',
             'phone'    => 'required|string|max:30',
         ], [
             'email.unique' => 'This email is already registered.',
+        ], [
+            'fullname' => 'full name', // error text says "full name"
         ]);
 
-        // Yes → INSERT registrations (token, username, email, phone)
+        // Yes → INSERT registrations (token, fullname, email, phone)
         $registration = Registration::create([
-            'username' => trim($data['username']),
+            'fullname' => trim($data['fullname']),
             'email'    => $data['email'],
             'phone'    => $data['phone'],
             'token'    => (string) Str::uuid(),
@@ -39,7 +41,6 @@ class RegistrationController extends Controller
             'message'    => $sent
                 ? 'Registered! Your QR code has been sent to your email.'
                 : 'Registered, but the email could not be sent. Save the QR code below.',
-            // the same QR as the email_logs type = 'qr' email, shown on the page
             'qr'         => 'data:image/png;base64,'.base64_encode($this->mailer->qrPng($registration)),
         ], 201);
     }

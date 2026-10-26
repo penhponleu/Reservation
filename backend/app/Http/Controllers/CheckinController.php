@@ -51,7 +51,7 @@ class CheckinController extends Controller
     // Last 30 scans for admin
     public function index()
     {
-        return CheckinLog::with(['registration:id,username,email', 'user:id,username'])
+        return CheckinLog::with(['registration:id,fullname,email', 'user:id,fullname'])
             ->orderByDesc('scanned_at')
             ->limit(30)
             ->get();

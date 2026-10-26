@@ -12,7 +12,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- USERS (admin / staff)
 CREATE TABLE users (
   id          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  username    VARCHAR(100) NOT NULL UNIQUE,          -- admin login
+  fullname    VARCHAR(100) NOT NULL,                 -- staff full name
   email       VARCHAR(255) NULL UNIQUE,              -- admin login
   password    VARCHAR(255) NULL,                     -- bcrypt hash
   created_at  TIMESTAMP NULL,
@@ -22,7 +22,7 @@ CREATE TABLE users (
 -- REGISTRATIONS (guests)
 CREATE TABLE registrations (
   id             BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  username       VARCHAR(100) NOT NULL DEFAULT '',   -- guest name
+  fullname       VARCHAR(100) NOT NULL DEFAULT '',   -- guest full name
   email          VARCHAR(255) NOT NULL UNIQUE,
   phone          VARCHAR(30)  NOT NULL,
   token          CHAR(36)     NOT NULL UNIQUE,       -- value inside the QR code
@@ -77,5 +77,5 @@ CREATE TABLE personal_access_tokens (
 
 -- ADMIN USER: email admin@gmail.com / password 123
 -- this long text is the bcrypt hash of 123 - you still type 123 to log in
-INSERT INTO users (username, email, password, created_at, updated_at)
-VALUES ('admin', 'admin@gmail.com', '$2y$12$GtCfeVbM9CxTDfMDCW4Po.XPsBBEwgsrm4QBU8kTWAbPTVat.JcnW', NOW(), NOW());
+INSERT INTO users (fullname, email, password, created_at, updated_at)
+VALUES ('Admin', 'admin@gmail.com', '$2y$12$GtCfeVbM9CxTDfMDCW4Po.XPsBBEwgsrm4QBU8kTWAbPTVat.JcnW', NOW(), NOW());

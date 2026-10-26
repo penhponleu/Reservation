@@ -9,7 +9,7 @@ class User extends Authenticatable
 {
     use HasApiTokens; // gives createToken() for login
 
-    protected $fillable = ['username', 'email', 'password'];
+    protected $fillable = ['fullname', 'email', 'password'];
 
     protected $hidden = ['password']; // never send the hash in API responses
 

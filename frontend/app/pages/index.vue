@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const api = useApi();
-const form = reactive({ username: "", email: "", phone: "" });
+const form = reactive({ fullname: "", email: "", phone: "" });
 const errors = ref<Record<string, string[]>>({});
 const message = ref("");
 const qr = ref(""); // QR shown only if the email failed
@@ -15,7 +15,7 @@ async function submit() {
     const res = await api("/register", { method: "POST", body: form });
     message.value = res.message;
     qr.value = res.email_sent ? "" : res.qr;
-    Object.assign(form, { username: "", email: "", phone: "" });
+    Object.assign(form, { fullname: "", email: "", phone: "" });
   } catch (e: any) {
     // Form valid? No → Show errors
     errors.value = e.data?.errors ?? {
@@ -34,9 +34,9 @@ async function submit() {
       <p>Fill in your details and we'll email your QR code to your Gmail.</p>
     </div>
     <form @submit.prevent="submit">
-      <label>Username</label>
-      <input v-model="form.username" type="text" placeholder="Your name" autocomplete="name" />
-      <p v-if="errors.username" class="error">{{ errors.username[0] }}</p>
+      <label>Full name</label>
+      <input v-model="form.fullname" type="text" placeholder="Your full name" autocomplete="name" />
+      <p v-if="errors.fullname" class="error">{{ errors.fullname[0] }}</p>
 
       <label>Email</label>
       <input v-model="form.email" type="email" placeholder="you@example.com" />
