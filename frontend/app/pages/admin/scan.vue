@@ -15,7 +15,18 @@ async function check(value: string) {
   if (!value) return;
   paused.value = true; // stop camera until "Scan next"
   try {
-    result.value = await api("/checkin", { method: "POST", body: { value } });
+    const res = await api("/checkin", { method: "POST", body: { value } });
+    // server time is UTC → show "already checked in" time in this device's time zone
+    if (res.result === "already_checked_in" && res.registration?.checked_in_at) {
+      res.message = `Already checked in at ${new Date(res.registration.checked_in_at).toLocaleString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      })}`;
+    }
+    result.value = res;
   } catch (e: any) {
     result.value = {
       result: "invalid",
