@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { QrcodeStream } from "vue-qrcode-reader";
 
-definePageMeta({ middleware: "auth" });
-
+// No login needed: page opens straight to the camera
 const api = useApi();
+const token = useCookie<string | null>("token");
 const paused = ref(false);
 const result = ref<any>(null);
 const cameraError = ref("");
@@ -47,8 +47,14 @@ function next() {
   paused.value = false;
 }
 
+// Recent scans show guest names/emails → only for logged-in staff
 async function loadLogs() {
-  logs.value = await api("/checkin-logs");
+  if (!token.value) return;
+  try {
+    logs.value = await api("/checkin-logs");
+  } catch {
+    logs.value = [];
+  }
 }
 
 onMounted(loadLogs);
@@ -78,7 +84,7 @@ onMounted(loadLogs);
       <button v-if="result" @click="next">Scan next</button>
     </div>
 
-    <div class="card table-wrap">
+    <div v-if="token" class="card table-wrap">
       <h3>Recent scans</h3>
       <table>
         <thead>

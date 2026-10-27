@@ -34,7 +34,7 @@ class CheckinController extends Controller
             // save every scan
             CheckinLog::create([
                 'registration_id' => $registration?->id,
-                'user_id'         => $request->user()->id,
+                'user_id'         => auth('sanctum')->id(), // null = scanned without login
                 'result'          => $result,
                 'scanned_value'   => $value,
                 'scanned_at'      => now(),

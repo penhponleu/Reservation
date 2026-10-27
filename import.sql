@@ -51,7 +51,7 @@ CREATE TABLE email_logs (
 CREATE TABLE checkin_logs (
   id               BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   registration_id  BIGINT UNSIGNED NULL,             -- null = invalid QR
-  user_id          BIGINT UNSIGNED NOT NULL,         -- staff who scanned
+  user_id          BIGINT UNSIGNED NULL,             -- staff who scanned (null = no login)
   result           ENUM('success','already_checked_in','invalid') NOT NULL,
   scanned_value    VARCHAR(255) NOT NULL,
   scanned_at       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

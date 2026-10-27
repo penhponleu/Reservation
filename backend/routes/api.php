@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Route;
 // Public
 Route::post('/register', [RegistrationController::class, 'store']);
 Route::post('/login', [AuthController::class, 'login']);
+// Scan page opens without login; limit guesses of QR codes
+Route::post('/checkin', [CheckinController::class, 'scan'])->middleware('throttle:60,1');
 
 // Admin pages: every request checks the token
 Route::middleware('auth:sanctum')->group(function () {
@@ -18,6 +20,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/registrations/{registration}', [RegistrationController::class, 'update']);
     Route::post('/registrations/{registration}/resend', [RegistrationController::class, 'resend']);
 
-    Route::post('/checkin', [CheckinController::class, 'scan']);
     Route::get('/checkin-logs', [CheckinController::class, 'index']);
 });
