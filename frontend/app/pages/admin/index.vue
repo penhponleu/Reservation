@@ -106,8 +106,9 @@ onMounted(load);
           </tr>
         </thead>
         <tbody>
-          <tr v-for="r in rows" :key="r.id">
-            <td>{{ r.id }}</td>
+          <tr v-for="(r, i) in rows" :key="r.id">
+            <!-- row number: first registration = 1 (list is newest first); DB id stays unchanged -->
+            <td>{{ rows.length - i }}</td>
             <template v-if="editId === r.id">
               <td>
                 <input v-model="edit.email" type="email" />
