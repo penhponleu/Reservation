@@ -24,7 +24,6 @@ class ConfirmationMailer
         } catch (Throwable $e) {
             $error = $e->getMessage();
         }
-
         // INSERT email_logs → sent or failed
         EmailLog::create([
             'registration_id' => $registration->id,
