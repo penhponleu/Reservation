@@ -32,28 +32,6 @@ h1, h2, h3 { margin: 0 0 8px; line-height: 1.25; }
 .container { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
 .row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
 
-/* ---------- Navigation ---------- */
-.nav {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 32px;
-  padding: 6px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  width: fit-content;
-}
-.nav a {
-  padding: 8px 16px;
-  border-radius: 8px;
-  color: var(--muted);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 14px;
-}
-.nav a:hover { color: var(--text); }
-.nav a.router-link-exact-active { background: var(--primary); color: #fff; }
-
 /* ---------- Card ---------- */
 .card {
   background: var(--card);

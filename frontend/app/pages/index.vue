@@ -1,4 +1,6 @@
 <script setup lang="ts">
+definePageMeta({ alias: "/register" }); // same page at / and /register
+
 const api = useApi();
 const form = reactive({ fullname: "", email: "", phone: "" });
 const errors = ref<Record<string, string[]>>({});
