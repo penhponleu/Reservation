@@ -7,6 +7,7 @@ const api = useApi();
 const paused = ref(false);
 const result = ref<any>(null);
 const cameraError = ref("");
+const cameraKey = ref(0); // change → camera restarts and asks permission again
 const logs = ref<any[]>([]);
 
 // Staff scans QR code → backend decides success / already_checked_in / invalid
@@ -35,6 +36,12 @@ function onError(err: any) {
       : `Camera error: ${err.message}`;
 }
 
+// "Allow camera" button → ask the browser for the camera again
+function retryCamera() {
+  cameraError.value = "";
+  cameraKey.value++;
+}
+
 function next() {
   result.value = null;
   paused.value = false;
@@ -52,8 +59,11 @@ onMounted(loadLogs);
     <div class="card narrow">
       <h1>Scan QR Code</h1>
 
-      <QrcodeStream :paused="paused" @detect="onDetect" @error="onError" />
-      <p v-if="cameraError" class="error">{{ cameraError }}</p>
+      <QrcodeStream :key="cameraKey" :paused="paused" @detect="onDetect" @error="onError" />
+      <template v-if="cameraError">
+        <p class="error">{{ cameraError }}</p>
+        <button @click="retryCamera">Allow camera</button>
+      </template>
 
       <div v-if="result" :class="['box', result.result]">
         {{ result.message }}
