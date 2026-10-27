@@ -22,8 +22,24 @@ async function check(value: string) {
       message: e.data?.message ?? "Request failed",
     };
   }
+  startCountdown();
   loadLogs();
 }
+
+// Pop-up counts down, then closes and turns the camera back on
+const COUNTDOWN = 3;
+const countdown = ref(0);
+let timer: ReturnType<typeof setInterval> | undefined;
+
+function startCountdown() {
+  clearInterval(timer);
+  countdown.value = COUNTDOWN;
+  timer = setInterval(() => {
+    if (--countdown.value <= 0) next();
+  }, 1000);
+}
+
+onBeforeUnmount(() => clearInterval(timer));
 
 function onDetect(codes: { rawValue: string }[]) {
   if (codes.length) check(codes[0].rawValue);
@@ -43,6 +59,7 @@ function retryCamera() {
 }
 
 function next() {
+  clearInterval(timer);
   result.value = null;
   paused.value = false;
 }
@@ -70,18 +87,18 @@ onMounted(loadLogs);
         <p class="error">{{ cameraError }}</p>
         <button @click="retryCamera">Allow camera</button>
       </template>
+    </div>
 
-      <div v-if="result" :class="['box', result.result]">
-        {{ result.message }}
-        <div
-          v-if="result.registration"
-          style="font-size: 14px; font-weight: 400"
-        >
-          {{ result.registration.fullname }} · {{ result.registration.email }} ·
-          {{ result.registration.phone }}
+    <!-- Scan result pop-up: closes by itself after the countdown -->
+    <div v-if="result" class="popup-bg" @click.self="next">
+      <div :class="['popup', 'box', result.result]">
+        <div class="popup-title">{{ result.message }}</div>
+        <div v-if="result.registration" class="popup-name">
+          {{ result.registration.fullname }}
         </div>
+        <div class="popup-count">Next scan in {{ countdown }}...</div>
+        <button @click="next">Scan next now</button>
       </div>
-      <button v-if="result" @click="next">Scan next</button>
     </div>
 
     <div v-if="token" class="card table-wrap">
@@ -113,3 +130,29 @@ onMounted(loadLogs);
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Dark screen behind the pop-up */
+.popup-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(15, 23, 42, 0.55);
+}
+/* Pop-up card (colors come from .box.success / already_checked_in / invalid) */
+.popup {
+  width: 100%;
+  max-width: 360px;
+  margin: 0;
+  padding: 32px 24px;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.3);
+}
+.popup-title { font-size: 28px; }
+.popup-name { margin-top: 8px; font-size: 20px; color: var(--text); }
+.popup-count { margin-top: 16px; font-size: 14px; font-weight: 400; }
+.popup button { width: 100%; }
+</style>
