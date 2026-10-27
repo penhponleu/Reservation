@@ -27,7 +27,7 @@ async function check(value: string) {
 }
 
 // Pop-up counts down, then closes and turns the camera back on
-const COUNTDOWN = 3;
+const COUNTDOWN = 10;
 const countdown = ref(0);
 let timer: ReturnType<typeof setInterval> | undefined;
 
