@@ -91,6 +91,7 @@ onMounted(loadLogs);
 
     <!-- Scan result pop-up: closes by itself after the countdown -->
     <div v-if="result" class="popup-bg" @click.self="next">
+      
       <div :class="['popup', 'box', result.result]">
         <div class="popup-title">{{ result.message }}</div>
         <div v-if="result.registration" class="popup-name">
@@ -151,7 +152,7 @@ onMounted(loadLogs);
   padding: 32px 24px;
   box-shadow: 0 20px 60px rgba(15, 23, 42, 0.3);
 }
-.popup-title { font-size: 28px; }
+.popup-title { font-size: 28px; overflow-wrap: anywhere; } /* long messages stay inside */
 .popup-name { margin-top: 8px; font-size: 20px; color: var(--text); }
 .popup-count { margin-top: 16px; font-size: 14px; font-weight: 400; }
 .popup button { width: 100%; }
