@@ -15,7 +15,7 @@ async function submit() {
   qr.value = "";
   try {
     const res = await api("/register", { method: "POST", body: form });
-    message.value = res.message;
+    message.value = res.ticket_no ? `${res.message} Your ticket: ${res.ticket_no}` : res.message;
     qr.value = res.email_sent ? "" : res.qr;
     Object.assign(form, { fullname: "", email: "", phone: "" });
   } catch (e: any) {

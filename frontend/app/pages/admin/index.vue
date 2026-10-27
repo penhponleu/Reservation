@@ -97,6 +97,7 @@ onMounted(load);
         <thead>
           <tr>
             <th>#</th>
+            <th>Ticket</th>
             <th>Email</th>
             <th>Full name</th>
             <th>Phone</th>
@@ -109,6 +110,7 @@ onMounted(load);
           <tr v-for="(r, i) in rows" :key="r.id">
             <!-- row number: first registration = 1 (list is newest first); DB id stays unchanged -->
             <td>{{ rows.length - i }}</td>
+            <td>{{ r.ticket_no }}</td>
             <template v-if="editId === r.id">
               <td>
                 <input v-model="edit.email" type="email" />
@@ -147,7 +149,7 @@ onMounted(load);
             </td>
           </tr>
           <tr v-if="!rows.length">
-            <td colspan="7">No registrations yet.</td>
+            <td colspan="8">No registrations yet.</td>
           </tr>
         </tbody>
       </table>

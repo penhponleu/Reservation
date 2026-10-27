@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Registration extends Model
 {
-    protected $fillable = ['fullname', 'email', 'phone', 'token', 'email_sent_at', 'checked_in_at'];
+    protected $fillable = ['ticket_no', 'fullname', 'email', 'phone', 'token', 'email_sent_at', 'checked_in_at'];
 
     protected $hidden = ['token']; // never send the QR value in API responses
 
@@ -14,6 +14,15 @@ class Registration extends Model
         'email_sent_at' => 'datetime',
         'checked_in_at' => 'datetime',
     ];
+
+    // New registration → ticket number from its id (id 1 → TKT-000001)
+    protected static function booted(): void
+    {
+        static::created(function (Registration $registration) {
+            $registration->ticket_no = sprintf('TKT-%06d', $registration->id);
+            $registration->saveQuietly();
+        });
+    }
 
     public function emailLogs()
     {

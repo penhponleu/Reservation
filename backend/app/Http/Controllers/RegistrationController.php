@@ -38,6 +38,7 @@ class RegistrationController extends Controller
 
         return response()->json([
             'email_sent' => $sent,
+            'ticket_no'  => $registration->ticket_no,
             'message'    => $sent
                 ? 'Registered! Your QR code has been sent to your email.'
                 : 'Registered, but the email could not be sent. Save the QR code below.',

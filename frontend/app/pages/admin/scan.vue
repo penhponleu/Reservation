@@ -107,11 +107,13 @@ onMounted(loadLogs);
         <div class="popup-title">{{ result.message }}</div>
         <div v-if="result.registration" class="popup-name">
           {{ result.registration.fullname }}
+          <div class="popup-ticket">{{ result.registration.ticket_no }}</div>
         </div>
         <div class="popup-count">Next scan in {{ countdown }}...</div>
         <button @click="next">Scan next now</button>
       </div>
     </div>
+   
 
     <div v-if="token" class="card table-wrap">
       <h3>Recent scans</h3>
@@ -165,6 +167,7 @@ onMounted(loadLogs);
 }
 .popup-title { font-size: 28px; overflow-wrap: anywhere; } /* long messages stay inside */
 .popup-name { margin-top: 8px; font-size: 20px; color: var(--text); }
+.popup-ticket { font-size: 14px; font-weight: 600; color: var(--muted); }
 .popup-count { margin-top: 16px; font-size: 14px; font-weight: 400; }
 .popup button { width: 100%; }
 </style>
