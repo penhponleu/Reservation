@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const api = useApi();
+const route = useRoute();
 const token = useCookie<string | null>("token", { maxAge: 60 * 60 * 12 });
 const form = reactive({ email: "", password: "" });
 const error = ref("");
@@ -12,7 +13,9 @@ async function login() {
   try {
     const res = await api("/login", { method: "POST", body: form });
     token.value = res.token;
-    await navigateTo("/admin");
+    // back to the page that asked for login (e.g. /admin/scan); only local paths
+    const back = String(route.query.redirect ?? "");
+    await navigateTo(back.startsWith("/admin") ? back : "/admin");
   } catch (e: any) {
     error.value = e.data?.message ?? "Wrong email or password";
   } finally {

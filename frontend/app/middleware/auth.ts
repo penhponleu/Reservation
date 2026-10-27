@@ -1,7 +1,7 @@
-// Admin pages: no token → go to login page
-export default defineNuxtRouteMiddleware(() => {
+// Admin pages: no token → go to login page, then come back here after login
+export default defineNuxtRouteMiddleware((to) => {
   const token = useCookie("token");
   if (!token.value) {
-    return navigateTo("/admin/login");
+    return navigateTo({ path: "/admin/login", query: { redirect: to.fullPath } });
   }
 });
