@@ -6,7 +6,6 @@ definePageMeta({ middleware: "auth" });
 const api = useApi();
 const paused = ref(false);
 const result = ref<any>(null);
-const manual = ref("");
 const cameraError = ref("");
 const logs = ref<any[]>([]);
 
@@ -38,7 +37,6 @@ function onError(err: any) {
 
 function next() {
   result.value = null;
-  manual.value = "";
   paused.value = false;
 }
 
@@ -59,17 +57,15 @@ onMounted(loadLogs);
 
       <div v-if="result" :class="['box', result.result]">
         {{ result.message }}
-        <div v-if="result.registration" style="font-size: 14px; font-weight: 400">
-          {{ result.registration.fullname }} · {{ result.registration.email }} · {{ result.registration.phone }}
+        <div
+          v-if="result.registration"
+          style="font-size: 14px; font-weight: 400"
+        >
+          {{ result.registration.fullname }} · {{ result.registration.email }} ·
+          {{ result.registration.phone }}
         </div>
       </div>
       <button v-if="result" @click="next">Scan next</button>
-
-      <form style="margin-top: 16px" @submit.prevent="check(manual)">
-        <label>Or type the code manually</label>
-        <input v-model="manual" placeholder="QR code value" />
-        <button class="light">Check in</button>
-      </form>
     </div>
 
     <div class="card table-wrap">
@@ -86,7 +82,13 @@ onMounted(loadLogs);
         <tbody>
           <tr v-for="l in logs" :key="l.id">
             <td>{{ new Date(l.scanned_at).toLocaleString() }}</td>
-            <td>{{ l.registration ? `${l.registration.fullname} (${l.registration.email})` : l.scanned_value }}</td>
+            <td>
+              {{
+                l.registration
+                  ? `${l.registration.fullname} (${l.registration.email})`
+                  : l.scanned_value
+              }}
+            </td>
             <td>{{ l.result }}</td>
             <td>{{ l.user?.fullname }}</td>
           </tr>
