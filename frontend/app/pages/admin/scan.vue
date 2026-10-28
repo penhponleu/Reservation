@@ -60,7 +60,9 @@ function onError(err: any) {
   cameraError.value =
     err.name === "NotAllowedError"
       ? "Camera permission denied. Please allow the camera."
-      : `Camera error: ${err.message}`;
+      : err.name === "NotReadableError"
+        ? "Camera is busy in another app or tab. Close it, then click Allow camera."
+        : `Camera error: ${err.message}`;
 }
 
 // "Allow camera" button → ask the browser for the camera again
