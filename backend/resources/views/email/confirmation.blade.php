@@ -10,7 +10,9 @@
         <tr>
             <td style="padding:24px; text-align:center; color:#222;">
                 <p style="font-size:16px; margin-top:0;">Hi <b>{{ $registration->fullname }}</b>, you're registered!</p>
-                <p style="font-size:18px; margin:0 0 12px;">Ticket: <b>{{ $registration->ticket_no }}</b></p>
+                @if ($registration->ticket_no)
+                    <p style="font-size:18px; margin:0 0 12px;">Ticket: <b>{{ $registration->ticket_no }}</b></p>
+                @endif
                 <p>Please show this QR code at the door to check in.</p>
 
                 <img src="{{ $message->embedData($qrPng, 'qr-code.png', 'image/png') }}"

@@ -38,7 +38,6 @@ class RegistrationController extends Controller
 
         return response()->json([
             'email_sent' => $sent,
-            'ticket_no'  => $registration->ticket_no,
             'message'    => $sent
                 ? 'Registered! Your QR code has been sent to your email.'
                 : 'Registered, but the email could not be sent. Save the QR code below.',
@@ -91,6 +90,19 @@ class RegistrationController extends Controller
         }
 
         return response()->json(['message' => $message, 'data' => $registration->fresh()]);
+    }
+
+    // Admin clicks "Get ticket" → save a ticket number (id 1 → TKT-000001)
+    public function ticket(Registration $registration)
+    {
+        if (! $registration->ticket_no) {
+            $registration->update(['ticket_no' => sprintf('TKT-%06d', $registration->id)]);
+        }
+
+        return response()->json([
+            'message' => 'Ticket '.$registration->ticket_no.' for '.$registration->fullname,
+            'data'    => $registration,
+        ]);
     }
 
     // Resend email → sent_by = admin id

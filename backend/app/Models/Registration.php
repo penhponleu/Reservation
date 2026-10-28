@@ -15,15 +15,6 @@ class Registration extends Model
         'checked_in_at' => 'datetime',
     ];
 
-    // New registration → ticket number from its id (id 1 → TKT-000001)
-    protected static function booted(): void
-    {
-        static::created(function (Registration $registration) {
-            $registration->ticket_no = sprintf('TKT-%06d', $registration->id);
-            $registration->saveQuietly();
-        });
-    }
-
     public function emailLogs()
     {
         return $this->hasMany(EmailLog::class);
