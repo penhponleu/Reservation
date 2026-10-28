@@ -74,7 +74,14 @@ async function submit() {
         aria-controls="ticket-box"
         @click="ticketOpen = !ticketOpen"
       >
-        🎟 My ticket <span :class="['chevron', { up: ticketOpen }]">▾</span>
+        <svg class="ticket-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 8a2 2 0 0 0 2-2h14a2 2 0 0 0 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 0-2 2H5a2 2 0 0 0-2-2v-2a2 2 0 0 0 0-4z" />
+          <path d="M14 6v2m0 3v2m0 3v2" />
+        </svg>
+        <span>{{ ticketOpen ? "Hide ticket" : "Open ticket" }}</span>
+        <svg :class="['chevron', { up: ticketOpen }]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
       </button>
 
       <div v-show="ticketOpen" id="ticket-box">
@@ -134,15 +141,28 @@ async function submit() {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
   margin: 0;
-  background: var(--card);
-  color: var(--primary);
-  border: 1px solid var(--primary);
+  padding: 13px 18px;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background: linear-gradient(115deg, #ea7a2c 0%, #c8512f 48%, #7a3b8f 100%);
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(200, 81, 47, 0.3);
+  transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
 }
-.ticket-toggle:hover:not(:disabled) { background: #eef2ff; }
-.chevron { display: inline-block; transition: transform 0.2s; }
+.ticket-toggle:hover:not(:disabled) {
+  background: linear-gradient(115deg, #ea7a2c 0%, #c8512f 48%, #7a3b8f 100%);
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(200, 81, 47, 0.38);
+}
+.ticket-toggle:active { transform: translateY(0); }
+.ticket-toggle:focus-visible { outline: 3px solid rgba(122, 59, 143, 0.35); outline-offset: 2px; }
+.ticket-ico { width: 20px; height: 20px; }
+.chevron { width: 18px; height: 18px; transition: transform 0.2s; }
 .chevron.up { transform: rotate(180deg); }
 
 /* Event ticket (orange → purple, tear-off stub with the QR code) */
