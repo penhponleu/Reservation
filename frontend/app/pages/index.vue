@@ -7,12 +7,14 @@ const errors = ref<Record<string, string[]>>({});
 const message = ref("");
 const ticket = ref<{ qr: string; fullname: string; email: string; phone: string } | null>(null); // ticket box after register
 const loading = ref(false);
+const ticketOpen = ref(false); // "My ticket" button opens / closes the small QR box
 
 async function submit() {
   loading.value = true;
   errors.value = {};
   message.value = "";
   ticket.value = null;
+  ticketOpen.value = false;
   try {
     const res = await api("/register", { method: "POST", body: form });
     message.value = res.message;
@@ -56,21 +58,33 @@ async function submit() {
     </form>
     <p v-if="message" class="success">{{ message }}</p>
 
-    <!-- Ticket box: the QR code this guest just registered with -->
-    <div v-if="ticket" class="ticket">
-      <div class="ticket-top">
-        <span class="ticket-label">Your ticket</span>
-        <span class="ticket-status">Registered</span>
+    <!-- "My ticket" button → small drop-down box with the QR code this guest registered with -->
+    <div v-if="ticket" class="ticket-wrap">
+      <button
+        type="button"
+        class="ticket-toggle"
+        :aria-expanded="ticketOpen"
+        aria-controls="ticket-box"
+        @click="ticketOpen = !ticketOpen"
+      >
+        🎟 My ticket <span :class="['chevron', { up: ticketOpen }]">▾</span>
+      </button>
+
+      <div v-show="ticketOpen" id="ticket-box" class="ticket">
+        <div class="ticket-top">
+          <span class="ticket-label">Your ticket</span>
+          <span class="ticket-status">Registered</span>
+        </div>
+        <img :src="ticket.qr" width="160" height="160" alt="Your QR code" />
+        <p class="ticket-hint">Show this QR code at the door to check in.</p>
+        <div class="ticket-cut" aria-hidden="true" />
+        <dl class="ticket-info">
+          <dt>Name</dt><dd>{{ ticket.fullname }}</dd>
+          <dt>Email</dt><dd>{{ ticket.email }}</dd>
+          <dt>Phone</dt><dd>{{ ticket.phone }}</dd>
+        </dl>
+        <a :href="ticket.qr" download="my-qr-ticket.png"><button type="button" class="ticket-download">Download QR</button></a>
       </div>
-      <img :src="ticket.qr" width="220" height="220" alt="Your QR code" />
-      <p class="ticket-hint">Show this QR code at the door to check in.</p>
-      <div class="ticket-cut" aria-hidden="true" />
-      <dl class="ticket-info">
-        <dt>Name</dt><dd>{{ ticket.fullname }}</dd>
-        <dt>Email</dt><dd>{{ ticket.email }}</dd>
-        <dt>Phone</dt><dd>{{ ticket.phone }}</dd>
-      </dl>
-      <a :href="ticket.qr" download="my-qr-ticket.png"><button type="button">Download QR</button></a>
     </div>
   </div>
 </template>
@@ -96,10 +110,27 @@ async function submit() {
   text-align: center;
 }
 
-/* Ticket box */
+/* "My ticket" button */
+.ticket-wrap { margin-top: 12px; }
+.ticket-toggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+  background: var(--card);
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
+.ticket-toggle:hover:not(:disabled) { background: #eef2ff; }
+.chevron { display: inline-block; transition: transform 0.2s; }
+.chevron.up { transform: rotate(180deg); }
+
+/* Small drop-down ticket box */
 .ticket {
-  margin-top: 16px;
-  padding: 20px;
+  margin-top: 8px;
+  padding: 16px 20px;
   text-align: center;
   background: #fff;
   border: 1px solid var(--border);
@@ -120,5 +151,5 @@ async function submit() {
 .ticket-info { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 0; text-align: left; font-size: 14px; }
 .ticket-info dt { color: var(--muted); }
 .ticket-info dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
-.ticket button { width: 100%; }
+.ticket-download { width: 100%; margin-top: 14px; }
 </style>
