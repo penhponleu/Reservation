@@ -5,3 +5,6 @@
 # secrets / local only
 .env
 *.log
+
+# local database backups (guest data, never push)
+backups/
