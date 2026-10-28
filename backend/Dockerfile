@@ -1,11 +1,11 @@
 # Laravel API for Dokploy (Build Type: Dockerfile, Build Path: /backend)
 FROM php:8.4-cli
 
-# gd = QR code images, pdo_pgsql = Neon, pdo_mysql = MySQL
+# gd = QR code images, pdo_pgsql = Neon, pdo_mysql = MySQL, intl = Filament admin panel
 RUN apt-get update \
- && apt-get install -y --no-install-recommends libpng-dev libjpeg-dev libfreetype6-dev libpq-dev libzip-dev unzip git \
+ && apt-get install -y --no-install-recommends libpng-dev libjpeg-dev libfreetype6-dev libpq-dev libzip-dev libicu-dev unzip git \
  && docker-php-ext-configure gd --with-freetype --with-jpeg \
- && docker-php-ext-install gd pdo_mysql pdo_pgsql zip \
+ && docker-php-ext-install gd pdo_mysql pdo_pgsql zip intl \
  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -15,7 +15,9 @@ COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-scripts --no-autoloader --no-interaction --prefer-dist
 
 COPY . .
+# filament:assets = copy the admin panel's CSS/JS/fonts into public/ (not in git)
 RUN composer dump-autoload --optimize --no-dev \
+ && php artisan filament:assets \
  && mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
  && chmod -R 777 storage bootstrap/cache
 
