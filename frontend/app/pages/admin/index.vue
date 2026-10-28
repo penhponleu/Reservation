@@ -63,7 +63,7 @@ const shown = computed(() => {
       if (filter.value === "checked" && !r.checked_in_at) return false;
       if (filter.value === "waiting" && r.checked_in_at) return false;
       if (filter.value === "no_email" && r.email_sent_at) return false;
-      return !q || [r.fullname, r.email, r.phone].some((v) => String(v ?? "").toLowerCase().includes(q));
+      return !q || [r.ticket_no, r.fullname, r.email, r.phone].some((v) => String(v ?? "").toLowerCase().includes(q));
     });
 });
 
@@ -177,7 +177,7 @@ onBeforeUnmount(() => clearTimeout(noticeTimer));
             {{ f.label }} <span class="tab-count">{{ f.count }}</span>
           </button>
         </div>
-        <input v-model="search" class="search" type="search" placeholder="Search name, email or phone" />
+        <input v-model="search" class="search" type="search" placeholder="Search ticket, name, email…" />
       </div>
 
       <p v-if="notice" class="notice">{{ notice }}</p>
@@ -187,6 +187,7 @@ onBeforeUnmount(() => clearTimeout(noticeTimer));
           <thead>
             <tr>
               <th>#</th>
+              <th>Ticket</th>
               <th>Guest</th>
               <th>Phone</th>
               <th>Email</th>
@@ -197,6 +198,7 @@ onBeforeUnmount(() => clearTimeout(noticeTimer));
           <tbody>
             <tr v-for="r in shown" :key="r.id">
               <td class="muted">{{ r.no }}</td>
+              <td><span class="ticket">{{ r.ticket_no || "—" }}</span></td>
 
               <template v-if="editId === r.id">
                 <td>
@@ -249,7 +251,7 @@ onBeforeUnmount(() => clearTimeout(noticeTimer));
               </td>
             </tr>
             <tr v-if="!shown.length">
-              <td colspan="6" class="empty">
+              <td colspan="7" class="empty">
                 {{ rows.length ? "No guests match this search or filter." : "No registrations yet." }}
               </td>
             </tr>
@@ -301,6 +303,7 @@ onBeforeUnmount(() => clearTimeout(noticeTimer));
 .guest { display: flex; align-items: center; gap: 10px; }
 .avatar { flex: none; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: #eef2ff; color: var(--primary); font-size: 13px; font-weight: 700; }
 .guest-name { font-weight: 600; }
+.ticket { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 13px; font-weight: 600; color: var(--primary); white-space: nowrap; }
 .muted { color: var(--muted); }
 .small { font-size: 13px; }
 .mt { margin-top: 6px; }
