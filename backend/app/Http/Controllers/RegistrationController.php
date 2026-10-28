@@ -39,7 +39,7 @@ class RegistrationController extends Controller
         return response()->json([
             'email_sent' => $sent,
             'message'    => $sent
-                ? 'Registered! Your QR code has been sent to your email.'
+                ? 'Congratulations! You have registered successfully. Your QR code has been sent to your email.'
                 : 'Registered, but the email could not be sent. Save the QR code below.',
             'qr'         => 'data:image/png;base64,'.base64_encode($this->mailer->qrPng($registration)),
         ], 201);
