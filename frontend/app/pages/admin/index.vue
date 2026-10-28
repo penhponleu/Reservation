@@ -163,7 +163,7 @@ onMounted(load);
 
 /* Edit / Save buttons side by side */
 .actions { white-space: nowrap; }
-.actions button + button { margin-left: 6px; }
+.actions button + button { margin-left: 12px; } /* space between Edit and Resend email */
 
 /* Edit = soft blue, Resend email = soft green */
 .btn-edit { background: #eef2ff; color: #4338ca; border: 1px solid #c7d2fe; }
