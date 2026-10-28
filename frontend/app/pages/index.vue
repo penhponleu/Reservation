@@ -5,18 +5,18 @@ const api = useApi();
 const form = reactive({ fullname: "", email: "", phone: "" });
 const errors = ref<Record<string, string[]>>({});
 const message = ref("");
-const qr = ref(""); // QR shown only if the email failed
+const ticket = ref<{ qr: string; fullname: string; email: string; phone: string } | null>(null); // ticket box after register
 const loading = ref(false);
 
 async function submit() {
   loading.value = true;
   errors.value = {};
   message.value = "";
-  qr.value = "";
+  ticket.value = null;
   try {
     const res = await api("/register", { method: "POST", body: form });
     message.value = res.message;
-    qr.value = res.email_sent ? "" : res.qr;
+    ticket.value = { qr: res.qr, ...form }; // same QR as in the email
     Object.assign(form, { fullname: "", email: "", phone: "" });
   } catch (e: any) {
     // Form valid? No → Show errors
@@ -56,10 +56,21 @@ async function submit() {
     </form>
     <p v-if="message" class="success">{{ message }}</p>
 
-    <div v-if="qr" class="qr">
-      <img :src="qr" width="250" height="250" alt="Your QR code" />
-      <p>Show this QR code at the door.</p>
-      <a :href="qr" download="my-qr-code.png"><button type="button">Download QR</button></a>
+    <!-- Ticket box: the QR code this guest just registered with -->
+    <div v-if="ticket" class="ticket">
+      <div class="ticket-top">
+        <span class="ticket-label">Your ticket</span>
+        <span class="ticket-status">Registered</span>
+      </div>
+      <img :src="ticket.qr" width="220" height="220" alt="Your QR code" />
+      <p class="ticket-hint">Show this QR code at the door to check in.</p>
+      <div class="ticket-cut" aria-hidden="true" />
+      <dl class="ticket-info">
+        <dt>Name</dt><dd>{{ ticket.fullname }}</dd>
+        <dt>Email</dt><dd>{{ ticket.email }}</dd>
+        <dt>Phone</dt><dd>{{ ticket.phone }}</dd>
+      </dl>
+      <a :href="ticket.qr" download="my-qr-ticket.png"><button type="button">Download QR</button></a>
     </div>
   </div>
 </template>
@@ -84,4 +95,30 @@ async function submit() {
   border-radius: 8px;
   text-align: center;
 }
+
+/* Ticket box */
+.ticket {
+  margin-top: 16px;
+  padding: 20px;
+  text-align: center;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-top: 6px solid var(--primary);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+.ticket-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.ticket-label { font-weight: 700; }
+.ticket-status { padding: 2px 10px; font-size: 12px; font-weight: 600; color: var(--green); background: var(--green-bg); border-radius: 99px; }
+.ticket img { display: block; margin: 0 auto; border: 1px solid var(--border); border-radius: 8px; }
+.ticket-hint { margin: 10px 0 0; color: var(--muted); font-size: 13px; }
+/* dashed tear line with notches, like a paper ticket */
+.ticket-cut { position: relative; margin: 16px -20px; border-top: 2px dashed var(--border); }
+.ticket-cut::before, .ticket-cut::after { content: ""; position: absolute; top: -10px; width: 18px; height: 18px; border-radius: 50%; background: var(--card); border: 1px solid var(--border); }
+.ticket-cut::before { left: -10px; }
+.ticket-cut::after { right: -10px; }
+.ticket-info { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 0; text-align: left; font-size: 14px; }
+.ticket-info dt { color: var(--muted); }
+.ticket-info dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.ticket button { width: 100%; }
 </style>
