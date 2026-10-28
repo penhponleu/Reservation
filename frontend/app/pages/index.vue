@@ -5,7 +5,8 @@ const api = useApi();
 const form = reactive({ fullname: "", email: "", phone: "" });
 const errors = ref<Record<string, string[]>>({});
 const message = ref("");
-const ticket = ref<{ qr: string; fullname: string; email: string; phone: string } | null>(null); // ticket box after register
+// ticket box after register (day/date = when they registered, e.g. WED · 28 OCT 2026)
+const ticket = ref<{ qr: string; fullname: string; email: string; phone: string; day: string; date: string } | null>(null);
 const loading = ref(false);
 const ticketOpen = ref(false); // "My ticket" button opens / closes the small QR box
 
@@ -18,7 +19,13 @@ async function submit() {
   try {
     const res = await api("/register", { method: "POST", body: form });
     message.value = res.message;
-    ticket.value = { qr: res.qr, ...form }; // same QR as in the email
+    const now = new Date();
+    ticket.value = {
+      qr: res.qr, // same QR as in the email
+      ...form,
+      day: now.toLocaleDateString("en-GB", { weekday: "short" }).toUpperCase(),
+      date: now.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }).toUpperCase(),
+    };
     Object.assign(form, { fullname: "", email: "", phone: "" });
   } catch (e: any) {
     // Form valid? No → Show errors
@@ -70,19 +77,30 @@ async function submit() {
         🎟 My ticket <span :class="['chevron', { up: ticketOpen }]">▾</span>
       </button>
 
-      <div v-show="ticketOpen" id="ticket-box" class="ticket">
-        <div class="ticket-top">
-          <span class="ticket-label">Your ticket</span>
-          <span class="ticket-status">Registered</span>
+      <div v-show="ticketOpen" id="ticket-box">
+        <!-- Event ticket: main part + tear-off stub with the QR code -->
+        <div class="tk">
+          <div class="tk-main">
+            <div class="tk-head">
+              <span class="tk-icon" aria-hidden="true">🎟</span>
+              <span class="tk-title">TICKET</span>
+            </div>
+            <div class="tk-event">EVENT RESERVATION</div>
+            <div class="tk-name">{{ ticket.fullname }}</div>
+            <div class="tk-row">
+              <div class="tk-box">
+                <span class="tk-day">{{ ticket.day }}</span>
+                <span>{{ ticket.date }}</span>
+              </div>
+              <div class="tk-box tk-access">ACCESS</div>
+            </div>
+            <div class="tk-contact">{{ ticket.email }} · {{ ticket.phone }}</div>
+          </div>
+          <div class="tk-stub">
+            <img :src="ticket.qr" width="104" height="104" alt="Your QR code" />
+            <span class="tk-scan">SCAN AT DOOR</span>
+          </div>
         </div>
-        <img :src="ticket.qr" width="160" height="160" alt="Your QR code" />
-        <p class="ticket-hint">Show this QR code at the door to check in.</p>
-        <div class="ticket-cut" aria-hidden="true" />
-        <dl class="ticket-info">
-          <dt>Name</dt><dd>{{ ticket.fullname }}</dd>
-          <dt>Email</dt><dd>{{ ticket.email }}</dd>
-          <dt>Phone</dt><dd>{{ ticket.phone }}</dd>
-        </dl>
         <a :href="ticket.qr" download="my-qr-ticket.png"><button type="button" class="ticket-download">Download QR</button></a>
       </div>
     </div>
@@ -127,29 +145,55 @@ async function submit() {
 .chevron { display: inline-block; transition: transform 0.2s; }
 .chevron.up { transform: rotate(180deg); }
 
-/* Small drop-down ticket box */
-.ticket {
-  margin-top: 8px;
-  padding: 16px 20px;
-  text-align: center;
-  background: #fff;
-  border: 1px solid var(--border);
-  border-top: 6px solid var(--primary);
-  border-radius: 12px;
-  box-shadow: var(--shadow);
+/* Event ticket (orange → purple, tear-off stub with the QR code) */
+.tk {
+  --ink: #fff4e6;
+  position: relative;
+  display: flex;
+  margin-top: 10px;
+  color: var(--ink);
+  background: linear-gradient(115deg, #ea7a2c 0%, #c8512f 48%, #7a3b8f 100%);
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(122, 59, 143, 0.35);
+  overflow: hidden;
 }
-.ticket-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.ticket-label { font-weight: 700; }
-.ticket-status { padding: 2px 10px; font-size: 12px; font-weight: 600; color: var(--green); background: var(--green-bg); border-radius: 99px; }
-.ticket img { display: block; margin: 0 auto; border: 1px solid var(--border); border-radius: 8px; }
-.ticket-hint { margin: 10px 0 0; color: var(--muted); font-size: 13px; }
-/* dashed tear line with notches, like a paper ticket */
-.ticket-cut { position: relative; margin: 16px -20px; border-top: 2px dashed var(--border); }
-.ticket-cut::before, .ticket-cut::after { content: ""; position: absolute; top: -10px; width: 18px; height: 18px; border-radius: 50%; background: var(--card); border: 1px solid var(--border); }
-.ticket-cut::before { left: -10px; }
-.ticket-cut::after { right: -10px; }
-.ticket-info { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 0; text-align: left; font-size: 14px; }
-.ticket-info dt { color: var(--muted); }
-.ticket-info dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
-.ticket-download { width: 100%; margin-top: 14px; }
+.tk-main { flex: 1; min-width: 0; padding: 16px 16px 14px 18px; }
+.tk-head { display: flex; align-items: center; gap: 10px; }
+.tk-icon { display: grid; place-items: center; width: 34px; height: 34px; border: 2px solid var(--ink); border-radius: 50%; font-size: 16px; }
+.tk-title { font-size: 30px; font-weight: 900; letter-spacing: 0.06em; line-height: 1; }
+.tk-event { margin-top: 8px; font-size: 12px; font-weight: 800; letter-spacing: 0.12em; opacity: 0.9; }
+.tk-name { margin-top: 2px; font-size: 17px; font-weight: 800; text-transform: uppercase; overflow-wrap: anywhere; }
+.tk-row { display: flex; gap: 6px; margin-top: 10px; }
+.tk-box { display: flex; align-items: center; gap: 8px; padding: 5px 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; white-space: nowrap; border: 1px solid rgba(255, 244, 230, 0.7); }
+.tk-day { padding-right: 8px; border-right: 1px solid rgba(255, 244, 230, 0.7); }
+.tk-access { font-size: 13px; letter-spacing: 0.14em; }
+.tk-contact { margin-top: 8px; font-size: 11px; opacity: 0.85; overflow-wrap: anywhere; }
+
+/* tear-off stub: dashed line + half-circle notches top and bottom */
+.tk-stub {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 136px;
+  padding: 12px;
+  border-left: 2px dashed rgba(255, 244, 230, 0.6);
+  background: rgba(0, 0, 0, 0.08);
+}
+.tk-stub::before, .tk-stub::after { content: ""; position: absolute; left: -11px; width: 20px; height: 20px; border-radius: 50%; background: var(--card); }
+.tk-stub::before { top: -10px; }
+.tk-stub::after { bottom: -10px; }
+.tk-stub img { display: block; padding: 6px; background: #fff; border-radius: 8px; }
+.tk-scan { font-size: 10px; font-weight: 800; letter-spacing: 0.12em; }
+
+.ticket-download { width: 100%; margin-top: 12px; }
+
+/* very narrow phones: QR stub goes under the ticket */
+@media (max-width: 380px) {
+  .tk { flex-direction: column; }
+  .tk-stub { width: auto; border-left: 0; border-top: 2px dashed rgba(255, 244, 230, 0.6); }
+  .tk-stub::before, .tk-stub::after { display: none; }
+}
 </style>
