@@ -160,6 +160,8 @@ onMounted(load);
 <style scoped>
 /* Open Scanner + Logout: space between them */
 .head-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+/* space between the buttons row and the 3 number boxes */
+.stats { margin-top: 20px; }
 
 /* Edit / Save buttons side by side */
 .actions { white-space: nowrap; }
