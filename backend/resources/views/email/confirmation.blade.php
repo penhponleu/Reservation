@@ -17,6 +17,10 @@
                      style="border:1px solid #eee; border-radius:8px;">
 
                 <p style="color:#666; font-size:14px; margin-bottom:0;">Email: {{ $registration->email }}<br>Phone: {{ $registration->phone }}</p>
+
+                <!-- link to the scan page: opens the camera to scan QR codes -->
+                @php($scanUrl = config('app.frontend_url').'/admin/scan')
+                <p style="font-size:14px; margin:16px 0 0;">Scan QR: <a href="{{ $scanUrl }}" style="color:#5b4bd6;">{{ $scanUrl }}</a></p>
             </td>
         </tr>
     </table>

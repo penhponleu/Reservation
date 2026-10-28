@@ -54,6 +54,9 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    // Nuxt site: the email links to its scan page (/admin/scan)
+    'frontend_url' => rtrim(env('FRONTEND_URL', 'https://reservation.devams.site'), '/'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
