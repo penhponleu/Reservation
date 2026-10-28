@@ -35,18 +35,6 @@ async function resend(id: number) {
   }
 }
 
-// "Get ticket" → backend saves a ticket number for this guest
-async function getTicket(id: number) {
-  busyId.value = id;
-  try {
-    const res = await api(`/registrations/${id}/ticket`, { method: "POST" });
-    notice.value = res.message;
-    await load();
-  } finally {
-    busyId.value = null;
-  }
-}
-
 // Edit a guest → PUT /registrations/{id} (new email → backend sends the QR there)
 const editId = ref<number | null>(null);
 const edit = reactive({ fullname: "", email: "", phone: "" });
@@ -109,7 +97,6 @@ onMounted(load);
         <thead>
           <tr>
             <th>#</th>
-            <th>Ticket</th>
             <th>Email</th>
             <th>Full name</th>
             <th>Phone</th>
@@ -122,12 +109,6 @@ onMounted(load);
           <tr v-for="(r, i) in rows" :key="r.id">
             <!-- row number: first registration = 1 (list is newest first); DB id stays unchanged -->
             <td>{{ rows.length - i }}</td>
-            <td>
-              <template v-if="r.ticket_no">{{ r.ticket_no }}</template>
-              <button v-else class="ticket" :disabled="busyId === r.id" @click="getTicket(r.id)">
-                Get ticket
-              </button>
-            </td>
             <template v-if="editId === r.id">
               <td>
                 <input v-model="edit.email" type="email" />
@@ -166,7 +147,7 @@ onMounted(load);
             </td>
           </tr>
           <tr v-if="!rows.length">
-            <td colspan="8">No registrations yet.</td>
+            <td colspan="7">No registrations yet.</td>
           </tr>
         </tbody>
       </table>
@@ -178,8 +159,4 @@ onMounted(load);
 /* Edit / Save buttons side by side */
 .actions { white-space: nowrap; }
 .actions button + button { margin-left: 6px; }
-td input { min-width: 140px; margin: 0; }
-/* orange "Get ticket" button */
-button.ticket { margin: 0; padding: 8px 14px; background: #d4450c; white-space: nowrap; }
-button.ticket:hover:not(:disabled) { background: #b83a09; }
-</style>
+td input { min-width: 140px; margin: 0; }</style>

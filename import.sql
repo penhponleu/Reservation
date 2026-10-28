@@ -22,7 +22,6 @@ CREATE TABLE users (
 -- REGISTRATIONS (guests)
 CREATE TABLE registrations (
   id             BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  ticket_no      VARCHAR(20)  NULL UNIQUE,           -- TKT-000001 (set when admin clicks Get ticket)
   fullname       VARCHAR(100) NOT NULL DEFAULT '',   -- guest full name
   email          VARCHAR(255) NOT NULL UNIQUE,
   phone          VARCHAR(30)  NOT NULL,
