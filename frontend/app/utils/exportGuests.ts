@@ -4,9 +4,9 @@ export function exportGuests(rows: any[], name = "guests") {
   const time = (d: string | null) => (d ? new Date(d).toLocaleString("en-GB") : "");
   const cell = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
 
-  const header = ["#", "Full name", "Email", "Phone", "Ticket type", "Registered", "Email sent", "Checked in"];
+  const header = ["#", "Full name", "Email", "Phone", "Registered", "Email sent", "Checked in"];
   const lines = rows.map((r, i) =>
-    [r.no ?? rows.length - i, r.fullname, r.email, r.phone, r.ticket_type?.name, time(r.created_at), time(r.email_sent_at), time(r.checked_in_at)]
+    [r.no ?? rows.length - i, r.fullname, r.email, r.phone, time(r.created_at), time(r.email_sent_at), time(r.checked_in_at)]
       .map(cell)
       .join(","),
   );

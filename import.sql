@@ -6,7 +6,7 @@ CREATE DATABASE IF NOT EXISTS reservation_system
 USE reservation_system;
 
 SET FOREIGN_KEY_CHECKS = 0;
-DROP TABLE IF EXISTS checkin_logs, email_logs, personal_access_tokens, registrations, ticket_types, users;
+DROP TABLE IF EXISTS checkin_logs, email_logs, personal_access_tokens, registrations, users;
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- USERS (admin / staff)
@@ -19,21 +19,7 @@ CREATE TABLE users (
   updated_at  TIMESTAMP NULL
 ) ENGINE=InnoDB;
 
--- TICKET_TYPES (General, VIP...)
-CREATE TABLE ticket_types (
-  id          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  name        VARCHAR(50)  NOT NULL UNIQUE,
-  quota       INT          NULL,                     -- null = no limit
-  is_active   TINYINT(1)   NOT NULL DEFAULT 1,       -- 0 = can't be given to guests
-  created_at  TIMESTAMP NULL,
-  updated_at  TIMESTAMP NULL
-) ENGINE=InnoDB;
-
-INSERT INTO ticket_types (name, quota, created_at, updated_at) VALUES
-  ('General', NULL, NOW(), NOW()),
-  ('VIP', 50, NOW(), NOW());
-
--- REGISTRATIONS (guests = tickets)
+-- REGISTRATIONS (guests)
 CREATE TABLE registrations (
   id             BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   fullname       VARCHAR(100) NOT NULL DEFAULT '',   -- guest full name
@@ -42,11 +28,8 @@ CREATE TABLE registrations (
   token          CHAR(36)     NOT NULL UNIQUE,       -- value inside the QR code
   email_sent_at  TIMESTAMP NULL,                     -- null = not sent
   checked_in_at  TIMESTAMP NULL,                     -- null = not arrived
-  ticket_type_id BIGINT UNSIGNED NULL,               -- General / VIP...
   created_at     TIMESTAMP NULL,
-  updated_at     TIMESTAMP NULL,
-  CONSTRAINT fk_registrations_ticket_type FOREIGN KEY (ticket_type_id)
-    REFERENCES ticket_types(id) ON DELETE SET NULL
+  updated_at     TIMESTAMP NULL
 ) ENGINE=InnoDB;
 
 -- EMAIL_LOGS

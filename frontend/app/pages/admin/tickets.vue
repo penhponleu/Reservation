@@ -12,13 +12,10 @@ const fmt = (d: string | null) =>
 const initials = (name: string) =>
   (name || "?").trim().split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase()).join("");
 
-const types = ref<any[]>([]); // ticket types for the Edit dropdown
-
 async function load() {
-  const [res, t] = await Promise.all([api("/registrations"), api("/ticket-types")]);
+  const res = await api("/registrations");
   rows.value = res.data;
   stats.value = res.stats;
-  types.value = t;
 }
 
 // Message at the top, hides itself after a few seconds
@@ -47,19 +44,19 @@ const shown = computed(() => {
       if (filter.value === "checked" && !r.checked_in_at) return false;
       if (filter.value === "waiting" && r.checked_in_at) return false;
       if (filter.value === "no_email" && r.email_sent_at) return false;
-      return !q || [r.fullname, r.email, r.phone, r.ticket_type?.name].some((v) => String(v ?? "").toLowerCase().includes(q));
+      return !q || [r.fullname, r.email, r.phone].some((v) => String(v ?? "").toLowerCase().includes(q));
     });
 });
 
 // Edit → PUT /registrations/{id} (new email → backend sends the QR there)
 const editId = ref<number | null>(null);
-const edit = reactive({ fullname: "", email: "", phone: "", ticket_type_id: null as number | null });
+const edit = reactive({ fullname: "", email: "", phone: "" });
 const editErrors = ref<Record<string, string[]>>({});
 
 function startEdit(r: any) {
   editId.value = r.id;
   editErrors.value = {};
-  Object.assign(edit, { fullname: r.fullname, email: r.email, phone: r.phone, ticket_type_id: r.ticket_type_id });
+  Object.assign(edit, { fullname: r.fullname, email: r.email, phone: r.phone });
 }
 
 async function save(id: number) {
@@ -139,7 +136,6 @@ onBeforeUnmount(() => clearTimeout(noticeTimer));
             <tr>
               <th>#</th>
               <th>Guest</th>
-              <th>Type</th>
               <th>Phone</th>
               <th>Email</th>
               <th>Check-in</th>
@@ -158,15 +154,6 @@ onBeforeUnmount(() => clearTimeout(noticeTimer));
                   <p v-if="editErrors.email" class="error">{{ editErrors.email[0] }}</p>
                 </td>
                 <td>
-                  <select v-model="edit.ticket_type_id">
-                    <option :value="null">— None —</option>
-                    <option v-for="t in types" :key="t.id" :value="t.id" :disabled="!t.is_active && t.id !== r.ticket_type_id">
-                      {{ t.name }}{{ t.quota ? ` (${t.registrations_count}/${t.quota})` : "" }}{{ t.is_active ? "" : " · off" }}
-                    </option>
-                  </select>
-                  <p v-if="editErrors.ticket_type_id" class="error">{{ editErrors.ticket_type_id[0] }}</p>
-                </td>
-                <td>
                   <input v-model="edit.phone" type="tel" placeholder="Phone" />
                   <p v-if="editErrors.phone" class="error">{{ editErrors.phone[0] }}</p>
                 </td>
@@ -180,10 +167,6 @@ onBeforeUnmount(() => clearTimeout(noticeTimer));
                       <div class="muted small">{{ r.email }}</div>
                     </div>
                   </div>
-                </td>
-                <td>
-                  <span v-if="r.ticket_type" :class="['badge', r.ticket_type.name === 'VIP' ? 'amber' : 'indigo']">{{ r.ticket_type.name }}</span>
-                  <span v-else class="muted">—</span>
                 </td>
                 <td>{{ r.phone }}</td>
               </template>
@@ -213,7 +196,7 @@ onBeforeUnmount(() => clearTimeout(noticeTimer));
               </td>
             </tr>
             <tr v-if="!shown.length">
-              <td colspan="7" class="empty">
+              <td colspan="6" class="empty">
                 {{ rows.length ? "No tickets match this search or filter." : "No registrations yet." }}
               </td>
             </tr>
@@ -233,8 +216,6 @@ onBeforeUnmount(() => clearTimeout(noticeTimer));
 .tab-count { margin-left: 4px; padding: 1px 7px; font-size: 12px; background: var(--border); border-radius: 99px; }
 .search { width: 260px; max-width: 100%; }
 .mt { margin-top: 6px; }
-select { padding: 7px 10px; font-size: 14px; border: 1px solid var(--border); border-radius: 8px; background: #fff; }
-.badge.amber { background: var(--orange-bg); color: var(--orange); }
 td { vertical-align: middle; }
 @media (max-width: 720px) { .search { width: 100%; } }
 </style>

@@ -3,7 +3,6 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CheckinController;
 use App\Http\Controllers\RegistrationController;
-use App\Http\Controllers\TicketTypeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,12 +24,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/registrations/{registration}', [RegistrationController::class, 'destroy']);
     Route::post('/registrations/{registration}/resend', [RegistrationController::class, 'resend']);
     Route::get('/checkin-logs', [CheckinController::class, 'index']);
-
-    // Ticket types page (General, VIP...)
-    Route::get('/ticket-types', [TicketTypeController::class, 'index']);
-    Route::post('/ticket-types', [TicketTypeController::class, 'store']);
-    Route::put('/ticket-types/{ticketType}', [TicketTypeController::class, 'update']);
-    Route::delete('/ticket-types/{ticketType}', [TicketTypeController::class, 'destroy']);
 
     // Users page (staff / admin logins)
     Route::get('/users', [UserController::class, 'index']);
