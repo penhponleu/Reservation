@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Registration extends Model
 {
-    protected $fillable = ['fullname', 'email', 'phone', 'token', 'email_sent_at', 'checked_in_at'];
+    protected $fillable = ['ticket_type_id', 'fullname', 'email', 'phone', 'token', 'email_sent_at', 'checked_in_at'];
 
     protected $hidden = ['token']; // never send the QR value in API responses
 
@@ -14,6 +14,11 @@ class Registration extends Model
         'email_sent_at' => 'datetime',
         'checked_in_at' => 'datetime',
     ];
+
+    public function ticketType()
+    {
+        return $this->belongsTo(TicketType::class);
+    }
 
     public function emailLogs()
     {
