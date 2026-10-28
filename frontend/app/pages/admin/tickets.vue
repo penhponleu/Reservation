@@ -112,6 +112,10 @@ onBeforeUnmount(() => clearTimeout(noticeTimer));
         <h1>Tickets</h1>
         <p>Everyone who registered. Edit details, resend the QR email or delete a ticket.</p>
       </div>
+      <div class="actions-row">
+        <!-- exports what the search / filter shows -->
+        <button class="light" :disabled="!shown.length" @click="exportGuests(shown, 'tickets')">Export Excel</button>
+      </div>
     </div>
 
     <section class="card">

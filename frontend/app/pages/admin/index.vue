@@ -37,6 +37,7 @@ onMounted(load);
       </div>
       <div class="actions-row">
         <button class="light" :disabled="loading" @click="load">{{ loading ? "Refreshing..." : "Refresh" }}</button>
+        <button class="light" :disabled="!rows.length" @click="exportGuests(rows)">Export Excel</button>
         <NuxtLink to="/admin/scan"><button>Open Scanner</button></NuxtLink>
       </div>
     </div>
