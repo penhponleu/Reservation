@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ middleware: "auth" });
+definePageMeta({ middleware: "auth", layout: "admin" }); // right sidebar
 
 const api = useApi();
 const token = useCookie<string | null>("token");

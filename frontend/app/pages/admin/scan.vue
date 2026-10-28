@@ -4,6 +4,7 @@ import { QrcodeStream } from "vue-qrcode-reader";
 // No login needed: page opens straight to the camera
 const api = useApi();
 const token = useCookie<string | null>("token");
+if (token.value) setPageLayout("admin"); // logged-in staff see the right sidebar
 const paused = ref(false);
 const result = ref<any>(null);
 const cameraError = ref("");
