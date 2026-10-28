@@ -54,6 +54,9 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    // Nuxt site: email links ("Open my QR code") point here
+    'frontend_url' => rtrim(env('FRONTEND_URL', 'https://reservation.devams.site'), '/'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

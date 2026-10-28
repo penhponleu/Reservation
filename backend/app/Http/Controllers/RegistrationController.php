@@ -45,6 +45,14 @@ class RegistrationController extends Controller
         ], 201);
     }
 
+    // Email link "Open my QR code" → QR image for this token
+    public function qr(string $token)
+    {
+        $registration = Registration::where('token', $token)->firstOrFail();
+
+        return response($this->mailer->qrPng($registration), 200, ['Content-Type' => 'image/png']);
+    }
+
     // Admin pages: guest list + numbers
     public function index()
     {

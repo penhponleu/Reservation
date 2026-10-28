@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Route;
 // Public
 Route::post('/register', [RegistrationController::class, 'store']);
 Route::post('/login', [AuthController::class, 'login']);
+// QR image for the email link (token = secret value inside the QR)
+Route::get('/qr/{token}', [RegistrationController::class, 'qr'])->middleware('throttle:60,1');
 // Scan page opens without login; limit guesses of QR codes
 Route::post('/checkin', [CheckinController::class, 'scan'])->middleware('throttle:60,1');
 

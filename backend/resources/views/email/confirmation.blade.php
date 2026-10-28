@@ -16,6 +16,14 @@
                      width="250" height="250" alt="QR code"
                      style="border:1px solid #eee; border-radius:8px;">
 
+                <!-- link opens the QR code full-size in the browser (works even if images are hidden) -->
+                <p style="margin:16px 0;">
+                    <a href="{{ config('app.frontend_url') }}/qr/{{ $registration->token }}"
+                       style="display:inline-block; background:#5b4bd6; color:#fff; text-decoration:none; font-weight:bold; padding:12px 24px; border-radius:8px;">
+                        Open my QR code
+                    </a>
+                </p>
+
                 <p style="color:#666; font-size:14px; margin-bottom:0;">Email: {{ $registration->email }}<br>Phone: {{ $registration->phone }}</p>
             </td>
         </tr>
