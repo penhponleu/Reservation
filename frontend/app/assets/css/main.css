@@ -107,6 +107,33 @@ th { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spa
 th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border); }
 tr:hover td { background: var(--bg); }
 
+/* ---------- Admin pages (shared) ---------- */
+.page-head { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+.page-head h1 { font-size: 26px; margin: 0; }
+.page-head p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+.page-head .actions-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.page-head button { margin: 0; }
+.notice { margin: 0 0 12px; padding: 10px 14px; background: var(--green-bg); color: var(--green); border-radius: 8px; font-size: 14px; }
+.notice.bad { background: var(--red-bg); color: var(--red); }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.avatar { flex: none; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: #eef2ff; color: var(--primary); font-size: 13px; font-weight: 700; }
+.person { display: flex; align-items: center; gap: 10px; }
+.person-name { font-weight: 600; }
+.badge { display: inline-block; padding: 3px 10px; font-size: 12px; font-weight: 600; border-radius: 99px; white-space: nowrap; }
+.badge.teal { background: #ccfbf1; color: #0f766e; }
+.badge.green { background: var(--green-bg); color: var(--green); }
+.badge.red { background: var(--red-bg); color: var(--red); }
+.badge.indigo { background: #eef2ff; color: var(--primary); }
+.badge.gray { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+button.sm { margin: 0; padding: 6px 12px; font-size: 13px; }
+button.danger { background: var(--red-bg); color: var(--red); }
+button.danger:hover:not(:disabled) { background: #fecaca; }
+td.actions { white-space: nowrap; text-align: right; }
+td.actions button + button { margin-left: 6px; }
+td input { min-width: 150px; margin: 0; padding: 7px 10px; font-size: 14px; }
+td.empty { padding: 32px 8px; text-align: center; color: var(--muted); }
+
 /* ---------- Checkbox ---------- */
 .check { display: flex; align-items: center; gap: 6px; font-weight: 400; margin-top: 8px; }
 .check input { width: auto; }

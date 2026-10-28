@@ -4,6 +4,7 @@ import { QrcodeStream } from "vue-qrcode-reader";
 // No login needed: page opens straight to the camera
 const api = useApi();
 const token = useCookie<string | null>("token");
+if (token.value) setPageLayout("admin"); // logged-in staff see the sidebar; others a plain page
 const paused = ref(false);
 const result = ref<any>(null);
 const cameraError = ref("");
@@ -53,7 +54,7 @@ function startCountdown() {
 onBeforeUnmount(() => clearInterval(timer));
 
 function onDetect(codes: { rawValue: string }[]) {
-  if (codes.length) check(codes[0].rawValue);
+  if (codes[0]) check(codes[0].rawValue);
 }
 
 function onError(err: any) {

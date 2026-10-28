@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
@@ -44,6 +45,28 @@ class AuthController extends Controller
     public function me(Request $request)
     {
         return $request->user();
+    }
+
+    // Settings page → change my name / email / password (current password needed for a new one)
+    public function updateMe(Request $request)
+    {
+        $user = $request->user();
+        $data = $request->validate([
+            'fullname'         => 'required|string|max:100',
+            'email'            => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+            'current_password' => 'required_with:password|nullable|string',
+            'password'         => 'nullable|string|min:6|confirmed',
+        ], [], ['fullname' => 'full name']);
+
+        if (! empty($data['password'])) {
+            if (! Hash::check($data['current_password'], $user->password)) {
+                return response()->json(['errors' => ['current_password' => ['Current password is wrong.']]], 422);
+            }
+            $user->password = $data['password'];
+        }
+        $user->fill(['fullname' => $data['fullname'], 'email' => $data['email']])->save();
+
+        return response()->json(['message' => 'Settings saved.', 'data' => $user]);
     }
 
     public function logout(Request $request)

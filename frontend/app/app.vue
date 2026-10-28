@@ -1,6 +1,7 @@
 <template>
-  <!-- No menu: open pages by URL (/register, /admin, /admin/scan) -->
-  <div class="container">
+  <!-- No top menu: open pages by URL (/register, /admin, /admin/scan).
+       Admin pages use layouts/admin.vue (sidebar), others layouts/default.vue -->
+  <NuxtLayout>
     <NuxtPage />
-  </div>
+  </NuxtLayout>
 </template>
