@@ -160,6 +160,9 @@ onMounted(load);
 <style scoped>
 /* Open Scanner + Logout: space between them */
 .head-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+/* table headings on one line ("CHECKED IN" like "EMAIL SENT") */
+th { white-space: nowrap; }
+
 /* space between the buttons row and the 3 number boxes */
 .stats { margin-top: 20px; }
 
