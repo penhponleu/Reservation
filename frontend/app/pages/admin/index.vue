@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ middleware: "auth", layout: "admin" }); // right sidebar
+definePageMeta({ middleware: "auth" });
 
 const api = useApi();
 const token = useCookie<string | null>("token");
@@ -81,6 +81,8 @@ onMounted(load);
         <h1>Admin Dashboard</h1>
         <div class="head-buttons">
           <NuxtLink to="/admin/scan"><button>Open Scanner</button></NuxtLink>
+          <!-- download the guest list as a file Excel opens -->
+          <button class="light" :disabled="!rows.length" @click="exportGuests(rows)">Export Excel</button>
           <button class="light" @click="logout">Logout</button>
         </div>
       </div>
@@ -157,7 +159,7 @@ onMounted(load);
 
 <style scoped>
 /* Open Scanner + Logout: space between them */
-.head-buttons { display: flex; gap: 10px; }
+.head-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
 
 /* Edit / Save buttons side by side */
 .actions { white-space: nowrap; }
