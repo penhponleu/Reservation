@@ -92,14 +92,6 @@ class RegistrationController extends Controller
         return response()->json(['message' => $message, 'data' => $registration->fresh()]);
     }
 
-    // Delete guest → their email logs go too, scan logs keep the row without the guest
-    public function destroy(Registration $registration)
-    {
-        $registration->delete();
-
-        return response()->json(['message' => $registration->fullname.' deleted.']);
-    }
-
     // Resend email → sent_by = admin id
     public function resend(Request $request, Registration $registration)
     {
