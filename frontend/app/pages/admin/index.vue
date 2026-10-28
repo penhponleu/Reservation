@@ -79,7 +79,7 @@ onMounted(load);
     <div class="card">
       <div class="row">
         <h1>Admin Dashboard</h1>
-        <div>
+        <div class="head-buttons">
           <NuxtLink to="/admin/scan"><button>Open Scanner</button></NuxtLink>
           <button class="light" @click="logout">Logout</button>
         </div>
@@ -156,6 +156,9 @@ onMounted(load);
 </template>
 
 <style scoped>
+/* Open Scanner + Logout: space between them */
+.head-buttons { display: flex; gap: 10px; }
+
 /* Edit / Save buttons side by side */
 .actions { white-space: nowrap; }
 .actions button + button { margin-left: 6px; }
