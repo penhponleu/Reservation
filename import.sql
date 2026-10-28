@@ -68,6 +68,7 @@ CREATE TABLE personal_access_tokens (
   tokenable_id    BIGINT UNSIGNED NOT NULL,
   name            TEXT NOT NULL,
   token           VARCHAR(64) NOT NULL UNIQUE,
+  abilities       TEXT NULL,                         -- Sanctum stores ["*"] here
   last_used_at    TIMESTAMP NULL,
   expires_at      TIMESTAMP NULL,
   created_at      TIMESTAMP NULL,
