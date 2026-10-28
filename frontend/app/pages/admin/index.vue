@@ -141,8 +141,8 @@ onMounted(load);
                 <p v-if="editErrors.general" class="error">{{ editErrors.general[0] }}</p>
               </template>
               <template v-else>
-                <button class="light" @click="startEdit(r)">Edit</button>
-                <button class="light" :disabled="busyId === r.id" @click="resend(r.id)">
+                <button class="btn-edit" @click="startEdit(r)">Edit</button>
+                <button class="btn-resend" :disabled="busyId === r.id" @click="resend(r.id)">
                   {{ busyId === r.id ? "Sending..." : "Resend email" }}
                 </button>
               </template>
@@ -164,4 +164,10 @@ onMounted(load);
 /* Edit / Save buttons side by side */
 .actions { white-space: nowrap; }
 .actions button + button { margin-left: 6px; }
+
+/* Edit = soft blue, Resend email = soft green */
+.btn-edit { background: #eef2ff; color: #4338ca; border: 1px solid #c7d2fe; }
+.btn-edit:hover:not(:disabled) { background: #e0e7ff; }
+.btn-resend { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+.btn-resend:hover:not(:disabled) { background: #bbf7d0; }
 td input { min-width: 140px; margin: 0; }</style>
